@@ -85,8 +85,19 @@ const BenefitApplication = () => {
     });
   };
   const handleUpdateRow = () => {
+    const values = formik.values;
+    const desctValues = {
+      is_family_head: values.is_family_head,
+      first_name: values.first_name,
+      second_name: values.second_name,
+      first_last_name: values.first_last_name,
+      second_last_name: values.second_last_name,
+      birth_date: moment(values.birth_date, "DD/MM/YYYY").toISOString(),
+      document_type: values.document_type,
+      document_number: values.document_number,
+    };
     api
-      .put(`/family-nucleus/${selectedRowId}`, formik.values)
+      .put(`/family-nucleus/${selectedRowId}`, desctValues)
       .then(() => {
         setSnackOptions({
           open: true,
@@ -256,11 +267,11 @@ const BenefitApplication = () => {
   return (
     <>
       <form onSubmit={formik.handleSubmit}>
-        <Grid container size={12} spacing={2}>
+        <Grid container size={{ xs: 12, sm: 12, md: 12 }} spacing={2}>
           <Typography variant="h4" fontWeight={600} color="primary.main">
             Inicio
           </Typography>
-          <Grid size={12}>
+          <Grid size={{ xs: 12, sm: 12, md: 12 }}>
             <Typography
               variant="h5"
               fontWeight={500}
@@ -269,7 +280,7 @@ const BenefitApplication = () => {
             >
               Solicitud de subsidio familiar de vivienda
             </Typography>
-            <Grid size={12} p={1}>
+            <Grid size={{ xs: 12, sm: 12, md: 12 }} p={1}>
               <Typography
                 variant="h6"
                 fontWeight={400}
@@ -279,8 +290,8 @@ const BenefitApplication = () => {
                 Conformación del hogar
               </Typography>
 
-              <Grid size={12} p={4}>
-                <Grid size={12}>
+              <Grid size={{ xs: 12, sm: 12, md: 12 }} p={4}>
+                <Grid size={{ xs: 12, sm: 12, md: 12 }}>
                   <Typography
                     variant="h6"
                     fontWeight={400}
@@ -291,8 +302,18 @@ const BenefitApplication = () => {
                   </Typography>
                 </Grid>
 
-                <Grid container size={6} spacing={2} mt={2} p={2}>
-                  <Grid size={12} display="flex" alignItems="flex-start">
+                <Grid
+                  container
+                  size={{ xs: 12, sm: 12, md: 6 }}
+                  spacing={2}
+                  mt={2}
+                  p={2}
+                >
+                  <Grid
+                    size={{ xs: 12, sm: 12, md: 12 }}
+                    display="flex"
+                    alignItems="flex-start"
+                  >
                     <FormControlLabel
                       control={
                         <Checkbox
@@ -303,7 +324,7 @@ const BenefitApplication = () => {
                       label="Cabeza de hogar"
                     />
                   </Grid>
-                  <Grid size={6}>
+                  <Grid size={{ xs: 12, sm: 6, md: 6 }}>
                     <InputComfandi
                       id="first_name"
                       label="Primer nombre"
@@ -322,7 +343,7 @@ const BenefitApplication = () => {
                       }
                     />
                   </Grid>
-                  <Grid size={6}>
+                  <Grid size={{ xs: 12, sm: 6, md: 6 }}>
                     <InputComfandi
                       id="second_name"
                       label="Segundo nombre"
@@ -342,7 +363,7 @@ const BenefitApplication = () => {
                       }
                     />
                   </Grid>
-                  <Grid size={6}>
+                  <Grid size={{ xs: 12, sm: 6, md: 6 }}>
                     <InputComfandi
                       id="first_last_name"
                       label="Primer apellido"
@@ -363,7 +384,7 @@ const BenefitApplication = () => {
                       }
                     />
                   </Grid>
-                  <Grid size={6}>
+                  <Grid size={{ xs: 12, sm: 6, md: 6 }}>
                     <InputComfandi
                       id="second_last_name"
                       label="Segundo apellido"
@@ -384,7 +405,7 @@ const BenefitApplication = () => {
                       }
                     />
                   </Grid>
-                  <Grid size={6}>
+                  <Grid size={{ xs: 12, sm: 6, md: 6 }}>
                     <DatePickerComfandi
                       name="birth_date"
                       label="Fecha de nacimiento"
@@ -398,8 +419,8 @@ const BenefitApplication = () => {
                       }
                     />
                   </Grid>
-                  <Grid size={6}></Grid>
-                  <Grid size={6}>
+                  <Grid size={{ xs: 12, sm: 6, md: 6 }}></Grid>
+                  <Grid size={{ xs: 12, sm: 6, md: 6 }}>
                     <SelectComfandi
                       id="document_type"
                       label="Tipo de documento"
@@ -409,7 +430,7 @@ const BenefitApplication = () => {
                       name="document_type"
                     />
                   </Grid>
-                  <Grid size={6}>
+                  <Grid size={{ xs: 12, sm: 6, md: 6 }}>
                     <InputComfandi
                       id="document_number"
                       label="Número identificación"
@@ -430,19 +451,14 @@ const BenefitApplication = () => {
                       }
                     />
                   </Grid>
-                  <Grid size={6}></Grid>
+                  <Grid size={{ xs: 12, sm: 6, md: 6 }}></Grid>
                   {isEditing ? (
                     <>
-                      <Grid
-                        container
-                        size={12}
-                        spacing={1}
-                        alignItems="flex-end"
-                      >
-                        <Grid size={5}>
+                      <Grid container size={{ xs: 12, sm: 12, md: 12 }}>
+                        <Grid size={6}>
                           <ButtonComfandi
                             content="Cancelar"
-                            bgcolor="error.main"
+                            bgcolor="primary.main"
                             type="button"
                             onClick={() => {
                               formik.resetForm();
@@ -450,7 +466,7 @@ const BenefitApplication = () => {
                             }}
                           ></ButtonComfandi>
                         </Grid>
-                        <Grid size={5}>
+                        <Grid size={6}>
                           <ButtonComfandi
                             content="Actualizar"
                             type="button"
@@ -460,16 +476,18 @@ const BenefitApplication = () => {
                       </Grid>
                     </>
                   ) : (
-                    <Grid size={6}>
-                      <ButtonComfandi
-                        content="Agregar"
-                        type="submit"
-                      ></ButtonComfandi>
-                    </Grid>
+                    <>
+                      <Grid size={{ xs: 12, sm: 6, md: 6 }}>
+                        <ButtonComfandi
+                          content="Agregar"
+                          type="submit"
+                        ></ButtonComfandi>
+                      </Grid>
+                    </>
                   )}
                 </Grid>
               </Grid>
-              <Grid size={12} p={4}>
+              <Grid size={{ xs: 12, sm: 12, md: 12 }} p={4}>
                 {rows.length > 0 ? (
                   <DataGrid
                     {...rows}
