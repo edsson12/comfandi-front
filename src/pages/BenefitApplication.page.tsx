@@ -4,6 +4,7 @@ import * as Yup from "yup";
 import {
   Alert,
   Checkbox,
+  FormHelperText,
   Grid2 as Grid,
   IconButton,
   Tooltip,
@@ -56,12 +57,11 @@ const BenefitApplication = () => {
         const newRows = dataRows.map((row: RowsProps) => {
           return {
             ...row,
-            birth_date: moment(row.birth_date).format("DD/MM/YYYY"),
-            created_at: moment(row.created_at).format("DD/MM/YYYY"),
-            updated_at: moment(row.updated_at).format("DD/MM/YYYY"),
+            birth_date: moment(row.birth_date).format("YYYY-MM-DD"),
+            created_at: moment(row.created_at).format("YYYY-MM-DD"),
+            updated_at: moment(row.updated_at).format("YYYY-MM-DD"),
           };
         });
-        console.log({ newRows });
         setRows(newRows);
       } else {
         setRows([]);
@@ -85,17 +85,22 @@ const BenefitApplication = () => {
     });
   };
   const handleUpdateRow = () => {
+    setIsLoading(true);
     const values = formik.values;
+
     const desctValues = {
       is_family_head: values.is_family_head,
       first_name: values.first_name,
       second_name: values.second_name,
       first_last_name: values.first_last_name,
       second_last_name: values.second_last_name,
-      birth_date: moment(values.birth_date, "DD/MM/YYYY").toISOString(),
+      birth_date: values.birth_date
+        ? moment(values.birth_date, "YYYY-MM-DD").toISOString()
+        : null,
       document_type: values.document_type,
       document_number: values.document_number,
     };
+
     api
       .put(`/family-nucleus/${selectedRowId}`, desctValues)
       .then(() => {
@@ -117,9 +122,11 @@ const BenefitApplication = () => {
           variant: "filled",
         });
       });
+    setIsLoading(false);
   };
 
   const handleDelete = (data: any) => () => {
+    setIsLoading(true);
     api.delete(`/family-nucleus/${data.row.id}`).then(() => {
       setSnackOptions({
         open: true,
@@ -129,6 +136,7 @@ const BenefitApplication = () => {
       });
       fetchTableInfo();
     });
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -136,24 +144,22 @@ const BenefitApplication = () => {
   }, [fetchTableInfo]);
 
   const columns: GridColDef<(typeof rows)[number]>[] = [
-    // { field: "id", headerName: "ID", width: 90 },
     {
       field: "first_name",
       headerName: "Nombres",
       flex: 1,
       align: "center",
       headerAlign: "center",
-      valueGetter: (row: any) =>
-        `${row.first_name || ""} ${row.second_name || ""}`,
+      valueGetter: (value: any, row) => `${value} ${row.second_name || ""}`,
     },
     {
-      field: "last_name",
+      field: "first_last_name",
       headerName: "Apellidos",
       flex: 1,
       align: "center",
       headerAlign: "center",
-      valueGetter: (row: any) =>
-        `${row.first_last_name || ""} ${row.second_last_name || ""}`,
+      valueGetter: (value: any, row) =>
+        `${value} ${row.second_last_name || ""}`,
     },
     {
       field: "birth_date",
@@ -161,7 +167,6 @@ const BenefitApplication = () => {
       flex: 1,
       align: "center",
       headerAlign: "center",
-      type: "number",
     },
     {
       field: "document_type",
@@ -177,7 +182,6 @@ const BenefitApplication = () => {
       flex: 1,
       align: "center",
       headerAlign: "center",
-      type: "number",
     },
 
     {
@@ -305,7 +309,7 @@ const BenefitApplication = () => {
                 <Grid
                   container
                   size={{ xs: 12, sm: 12, md: 6 }}
-                  spacing={2}
+                  spacing={3}
                   mt={2}
                   p={2}
                 >
@@ -418,6 +422,11 @@ const BenefitApplication = () => {
                         formik.setFieldValue("birth_date", value)
                       }
                     />
+                    {formik.touched.birth_date && formik.errors.birth_date && (
+                      <FormHelperText error>
+                        {formik.errors.birth_date as string}
+                      </FormHelperText>
+                    )}
                   </Grid>
                   <Grid size={{ xs: 12, sm: 6, md: 6 }}></Grid>
                   <Grid size={{ xs: 12, sm: 6, md: 6 }}>
@@ -429,6 +438,12 @@ const BenefitApplication = () => {
                       onChange={formik.handleChange}
                       name="document_type"
                     />
+                    {formik.touched.document_type &&
+                      formik.errors.document_type && (
+                        <FormHelperText error>
+                          {formik.errors.document_type as string}
+                        </FormHelperText>
+                      )}
                   </Grid>
                   <Grid size={{ xs: 12, sm: 6, md: 6 }}>
                     <InputComfandi
@@ -454,7 +469,11 @@ const BenefitApplication = () => {
                   <Grid size={{ xs: 12, sm: 6, md: 6 }}></Grid>
                   {isEditing ? (
                     <>
-                      <Grid container size={{ xs: 12, sm: 12, md: 12 }}>
+                      <Grid
+                        container
+                        size={{ xs: 12, sm: 12, md: 12 }}
+                        spacing={1}
+                      >
                         <Grid size={6}>
                           <ButtonComfandi
                             content="Cancelar"
