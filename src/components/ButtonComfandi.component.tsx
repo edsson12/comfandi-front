@@ -7,7 +7,7 @@ const ButtonComfandiStyles = styled(Button)<{
   theme?: Theme;
   bgcolor?: string;
 }>(({ theme, bgcolor }) => ({
-  backgroundColor: bgcolor ? bgcolor : theme.palette.primary.main,
+  backgroundColor: bgcolor ? bgcolor : theme.palette.secondary.main,
   color: 'white',
   "&:hover": {
     boxShadow: "none",

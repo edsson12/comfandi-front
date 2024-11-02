@@ -21,9 +21,15 @@ class HttpInterceptor {
     try {
       const response = await fetch(url, options);
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorData = await response.json();
+        throw {
+          message: `HTTP error! status: ${response.status}`,
+          response,
+          errorData,
+        };
       }
-      return await response.json();
+      const data = await response.json();
+      return { data, response };
     } catch (error) {
       console.error("Fetch error:", error);
       throw error;
