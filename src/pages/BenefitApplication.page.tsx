@@ -143,7 +143,7 @@ const BenefitApplication = () => {
       flex: 1,
       align: "center",
       headerAlign: "center",
-      valueGetter: (value, row) =>
+      valueGetter: (row: any) =>
         `${row.first_name || ""} ${row.second_name || ""}`,
     },
     {
@@ -152,7 +152,7 @@ const BenefitApplication = () => {
       flex: 1,
       align: "center",
       headerAlign: "center",
-      valueGetter: (value, row) =>
+      valueGetter: (row: any) =>
         `${row.first_last_name || ""} ${row.second_last_name || ""}`,
     },
     {
